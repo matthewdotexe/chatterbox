@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const User = mongoose.model("User");
 
-exports.registerNewUser = (req, res) => {
+exports.registerNewUser = async (req, res) => {
   const formatter = new User();
   const user = new User({
     username: req.body.username,
@@ -17,7 +17,19 @@ exports.registerNewUser = (req, res) => {
     dateCreated: new Date(),
     isOnline: false
   });
-  user.save();
+
+  try {
+    await user.save();
+    res.send("🎉 Congratulations! You're officially a Chatterbox member! 🎉");
+  } catch (error) {
+    res.status(500).send({
+      errors: [
+        {
+          msg: "Unable to create your account right now. Please try again."
+        }
+      ]
+    });
+  }
 };
 
 exports.login = async (req, res) => {
