@@ -33,7 +33,7 @@ mongoose.connect(process.env.DATABASE, { useNewUrlParser: true });
 mongoose.set("useCreateIndex", true);
 mongoose.set("useFindAndModify", false);
 const db = mongoose.connection;
-db.on("error", err => console.err(`🚫 🙉 🚫 🙉 🚫 🙉 🚫 🙉 ${err.message}`));
+db.on("error", err => console.error(`🚫 🙉 🚫 🙉 🚫 🙉 🚫 🙉 ${err.message}`));
 db.on("open", () => console.log("🎉 🎊  Databse connected! 🎉 🎊"));
 
 if (process.env.NODE_ENV === "production") {
@@ -94,7 +94,7 @@ io.on("connection", socket => {
     const socketId = socket.id;
     const username = users[socket.id];
     delete users[socketId];
-    const onlineUsers = Object.values(users);
+    const onlineUsers = [...new Set(Object.values(users))];
 
     if (!username) return;
     socket.broadcast.emit("logout", username);
